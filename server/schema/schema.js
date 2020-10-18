@@ -9,6 +9,7 @@ const {
   GraphQLSchema,
   GraphQLInt,
   GraphQLList,
+  GraphQLNonNull,
 } = graphql;
 
 const MovieType = new GraphQLObjectType({
@@ -58,6 +59,18 @@ const RootQuery = new GraphQLObjectType({
         return Director.findById(args.id);
       },
     },
+    movies: {
+      type: GraphQLList(MovieType),
+      resolve(parent, args) {
+        return Movie.find({})
+      },
+    },
+    directors: {
+      type: GraphQLList(DirectorType),
+      resolve(parent, args) {
+        return Director.find({})
+      },
+    },
   },
 });
 
@@ -94,6 +107,10 @@ const Mutation = new GraphQLObjectType({
         return director.save();
       },
     },
+    updateDirctor: {
+      type: DirectorType,
+      args: {id: {type: GraphQLNonNull}}
+    }
   },
 });
 
