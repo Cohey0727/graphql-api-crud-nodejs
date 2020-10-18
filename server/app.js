@@ -5,8 +5,6 @@ const mongoose = require("mongoose");
 const schema = require("./schema/schema");
 const app = express();
 
-console.log(process.env);
-
 mongoose.connect(process.env.MONGODB_URL);
 mongoose.connection.once("open", () => {
   console.log("connect success");
