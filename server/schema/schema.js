@@ -62,13 +62,13 @@ const RootQuery = new GraphQLObjectType({
     movies: {
       type: GraphQLList(MovieType),
       resolve(parent, args) {
-        return Movie.find({})
+        return Movie.find({});
       },
     },
     directors: {
       type: GraphQLList(DirectorType),
       resolve(parent, args) {
-        return Director.find({})
+        return Director.find({});
       },
     },
   },
@@ -88,9 +88,32 @@ const Mutation = new GraphQLObjectType({
         const movie = new Movie({
           name: args.name,
           genre: args.genre,
-          directorId: args.directorId
+          directorId: args.directorId,
         });
         return movie.save();
+      },
+    },
+    updateMovie: {
+      type: MovieType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+        name: { type: GraphQLString },
+        genre: { type: GraphQLString },
+        directorId: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const params = {};
+        args.name && (params.name = args.name);
+        args.genre && (params.age = args.genre);
+        args.directorId && (params.directorId = args.directorId);
+        return Movie.findByIdAndUpdate(args.id, params, { new: true });
+      },
+    },
+    deleteMovie: {
+      type: MovieType,
+      args: { id: { type: GraphQLNonNull(GraphQLID) } },
+      resolve(parent, args) {
+        return Movie.findByIdAndRemove(args.id);
       },
     },
     addDirector: {
@@ -109,8 +132,25 @@ const Mutation = new GraphQLObjectType({
     },
     updateDirctor: {
       type: DirectorType,
-      args: {id: {type: GraphQLNonNull}}
-    }
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+        name: { type: GraphQLString },
+        age: { type: GraphQLInt },
+      },
+      resolve(parent, args) {
+        const params = {};
+        args.name && (params.name = args.name);
+        args.age && (params.age = args.age);
+        return Director.findByIdAndUpdate(args.id, params, { new: true });
+      },
+    },
+    deleteDirector: {
+      type: DirectorType,
+      args: { id: { type: GraphQLNonNull(GraphQLID) } },
+      resolve(parent, args) {
+        return Director.findByIdAndRemove(args.id);
+      },
+    },
   },
 });
 
